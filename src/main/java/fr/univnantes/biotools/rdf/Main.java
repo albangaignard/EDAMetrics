@@ -5,6 +5,10 @@
  */
 package fr.univnantes.biotools.rdf;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.commons.cli.BasicParser;
@@ -15,12 +19,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.jena.query.Query;
-import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
-import org.apache.jena.query.QueryFactory;
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.RDFDataMgr;
@@ -48,22 +46,22 @@ public class Main {
                 .withDescription("The input ontology in OWL")
                 .hasArgs()
                 .create("i");
-        
+
         Option countFormatsOpt = OptionBuilder.withArgName("count_formats")
                 .withLongOpt("count_formats")
                 .withDescription("count formats")
                 .create("cf");
-        
+
         Option countFormatsBDTOpt = OptionBuilder.withArgName("count_formats_by_data_types")
                 .withLongOpt("count_formats_by_data_types")
                 .withDescription("count formats by data types")
                 .create("cfdt");
-        
+
         Option countTopicsOpt = OptionBuilder.withArgName("count_topics")
                 .withLongOpt("count_topics")
                 .withDescription("count topics")
                 .create("ct");
-        
+
         Option countDataOpt = OptionBuilder.withArgName("count_data")
                 .withLongOpt("count_data")
                 .withDescription("count data")
@@ -73,27 +71,27 @@ public class Main {
                 .withLongOpt("count_exact_synonyms")
                 .withDescription("count exact synonyms")
                 .create("ces");
-        
+
         Option sortExactSynonymsOpt = OptionBuilder.withArgName("sort_exact_synonyms")
                 .withLongOpt("sort_exact_synonyms")
                 .withDescription("sort exact synonyms")
                 .create("ses");
-        
+
         Option countNarrowSynonymsOpt = OptionBuilder.withArgName("count_narrow_synonyms")
                 .withLongOpt("count_narrow_synonyms")
                 .withDescription("count narrow synonyms")
                 .create("cns");
-        
+
         Option sortNarrowSynonymsOpt = OptionBuilder.withArgName("sort_narrow_synonyms")
                 .withLongOpt("sort_narrow_synonyms")
                 .withDescription("sort narrow synonyms")
                 .create("sns");
-        
+
         Option countBroadSynonymsOpt = OptionBuilder.withArgName("count_broad_synonyms")
                 .withLongOpt("count_broad_synonyms")
                 .withDescription("count broad synonyms")
                 .create("cbs");
-        
+
         Option sortBroadSynonymsOpt = OptionBuilder.withArgName("sort_broad_synonyms")
                 .withLongOpt("sort_broad_synonyms")
                 .withDescription("sort broad synonyms")
@@ -103,7 +101,6 @@ public class Main {
 //                .withLongOpt("summary_table")
 //                .withDescription("outputs a summay table")
 //                .create("summary");
-
         options.addOption(inOwlOpt);
         options.addOption(countDataOpt);
         options.addOption(countTopicsOpt);
@@ -130,7 +127,7 @@ public class Main {
                 formatter.printHelp("EDAM-Metrics", header, options, footer, true);
                 System.exit(0);
             }
-            
+
             if (cmd.hasOption("v")) {
                 System.out.println("EDAM-metrics version 0.0.1");
                 System.exit(0);
@@ -140,61 +137,72 @@ public class Main {
                 logger.debug("loading input OWL file");
                 String inFile = cmd.getOptionValue("i");
 
-                Path p = Paths.get(inFile);
-                if (!p.toFile().isFile()) {
-                    logger.error("Cannot find file " + inFile);
-                    System.exit(1);
-                } else {
-                    RDFDataMgr.read(model, inFile);
-                    logger.debug("loaded " + model.size() + " triples");
-                }
+//                try {
+//                    URL url = new URL(inFile);
+//                    URLConnection conn = url.openConnection();
+//                    conn.connect();
+//                    RDFDataMgr.read(model, inFile);
+//                } catch (MalformedURLException e) {
+                    // the URL is not in a valid form
+                    Path p = Paths.get(inFile);
+                    if (!p.toFile().isFile()) {
+                        logger.error("Cannot find file " + inFile);
+                        System.exit(1);
+                    } else {
+                        RDFDataMgr.read(model, inFile);
+                        logger.debug("loaded " + model.size() + " triples");
+                    }
+//                } catch (IOException e) {
+//                    logger.error("Could not establish connection to " + inFile);
+//                }
+
             }
 
             if (cmd.hasOption("ces")) {
                 logger.debug("counting exact synonyms");
                 Queries.runSelect(Queries.countExactSynonyms, model);
             }
-            
+
             if (cmd.hasOption("ses")) {
                 logger.debug("counting exact synonyms");
                 Queries.runSelect(Queries.sortedExactSynonyms, model);
             }
-            
+
             if (cmd.hasOption("cns")) {
                 logger.debug("counting narrow synonyms");
                 Queries.runSelect(Queries.countNarrowSynonyms, model);
             }
-            
+
             if (cmd.hasOption("sns")) {
                 logger.debug("counting narrow synonyms");
                 Queries.runSelect(Queries.sortedNarrowSynonyms, model);
             }
-            
+
             if (cmd.hasOption("cbs")) {
                 logger.debug("counting narrow synonyms");
                 Queries.runSelect(Queries.countBroadSynonyms, model);
             }
-            
+
             if (cmd.hasOption("sbs")) {
                 logger.debug("counting narrow synonyms");
                 Queries.runSelect(Queries.sortedBroadSynonyms, model);
             }
-            
+
             if (cmd.hasOption("cf")) {
                 logger.debug("counting formats");
                 Queries.runSelect(Queries.countFormats, model);
             }
-            
+
             if (cmd.hasOption("cfdt")) {
                 logger.debug("counting formats by data types");
                 Queries.runSelect(Queries.countFormatsByDataType, model);
             }
-            
+
             if (cmd.hasOption("ct")) {
                 logger.debug("counting topics");
                 Queries.runSelect(Queries.countTopics, model);
             }
-            
+
             if (cmd.hasOption("cd")) {
                 logger.debug("counting data");
                 Queries.runSelect(Queries.countData, model);
@@ -204,13 +212,13 @@ public class Main {
                 logger.info("EDAM-metrics version 0.1.0");
                 System.exit(0);
             }
-            
-            if (cmd.getOptions().length  == 0) {
+
+            if (cmd.getOptions().length == 0) {
                 HelpFormatter formatter = new HelpFormatter();
                 formatter.printHelp("EDAM-Metrics", header, options, footer, true);
                 System.exit(0);
             }
-            
+
         } catch (ParseException ex) {
             logger.error("Error while parsing command line arguments. Please check the following help:");
             HelpFormatter formatter = new HelpFormatter();
