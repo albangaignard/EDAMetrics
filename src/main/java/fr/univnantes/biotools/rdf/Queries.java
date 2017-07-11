@@ -9,8 +9,10 @@ import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
+import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.query.ResultSetFormatter;
+import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Model;
 
 /**
@@ -144,5 +146,35 @@ public class Queries {
         ResultSet rs = queryExec.execSelect();
         System.out.println(ResultSetFormatter.asText(rs));
         queryExec.close();
+    }
+    
+    public static int getCount(String q, Model m) {
+        Query query = QueryFactory.create(q);
+        QueryExecution queryExec = QueryExecutionFactory.create(query, m);
+        ResultSet rs = queryExec.execSelect();
+        String vName = "";
+        for (String v: rs.getResultVars()) {
+            if (v.contains("count")) {
+                vName = v;
+                break;
+            }
+        }
+        
+        while (rs.hasNext()) {
+            QuerySolution s = rs.nextSolution();
+            Literal c = s.getLiteral(vName);
+            queryExec.close();
+            return c.getInt();
+        }   
+        queryExec.close();
+        return 0;
+    }
+    
+    public void countEntries() {
+        
+    }
+    
+    public void computeDelta(Model m1, Model m2) {
+        
     }
 }

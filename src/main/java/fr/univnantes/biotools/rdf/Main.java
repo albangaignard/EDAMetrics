@@ -113,10 +113,10 @@ public class Main {
                 .withDescription("sort broad synonyms")
                 .create("sbs");
 
-        Option summaryOpt = OptionBuilder.withArgName("summary_table")
-                .withLongOpt("summary_table")
+        Option summaryOpt = OptionBuilder.withArgName("summary")
+                .withLongOpt("summary")
                 .withDescription("outputs a summay table")
-                .create("summary");
+                .create("s");
 
         options.addOption(inOwlOpt);
         options.addOption(countDataOpt);
@@ -133,10 +133,11 @@ public class Main {
         options.addOption(sortNarrowSynonymsOpt);
         options.addOption(countBroadSynonymsOpt);
         options.addOption(sortBroadSynonymsOpt);
+        options.addOption(summaryOpt);
         options.addOption(versionOpt);
         options.addOption(helpOpt);
 
-        String header = "EDAM-Metrics aims at computing basic metrics on the EDAM ontology";
+        String header = "EDAMetrics aims at computing basic metrics on the EDAM ontology";
         String footer = "\nPlease report any issue to alban.gaignard@univ-nantes.fr";
 
         try {
@@ -247,6 +248,12 @@ public class Main {
             if (cmd.hasOption("dd")) {
                 logger.debug("list deep data");
                 Queries.runSelect(Queries.listDeepData, model);
+            }
+            
+            if (cmd.hasOption("s")) {
+                logger.debug("summaries vital metrics");
+                EdamVitalMetrics vm = new EdamVitalMetrics(model);
+                System.out.println(vm);
             }
 
             if (cmd.hasOption("v")) {
