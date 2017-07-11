@@ -5,10 +5,6 @@
  */
 package fr.univnantes.biotools.rdf;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.apache.commons.cli.BasicParser;
@@ -51,11 +47,31 @@ public class Main {
                 .withLongOpt("count_formats")
                 .withDescription("count formats")
                 .create("cf");
-
-        Option countFormatsBDTOpt = OptionBuilder.withArgName("count_formats_by_data_types")
-                .withLongOpt("count_formats_by_data_types")
-                .withDescription("count formats by data types")
-                .create("cfdt");
+        
+        Option countOperationsOpt = OptionBuilder.withArgName("count_operations")
+                .withLongOpt("count_operations")
+                .withDescription("count operations")
+                .create("co");
+        
+        Option listDeepOperationsOpt = OptionBuilder.withArgName("list_deep_operations")
+                .withLongOpt("list_deep_operations")
+                .withDescription("list deep operations (6+ nested levels)")
+                .create("do");
+        
+        Option listDeepDataOpt = OptionBuilder.withArgName("list_deep_data")
+                .withLongOpt("list_deep_data")
+                .withDescription("list deep data (6+ nested levels)")
+                .create("dd");
+        
+        Option listDeepFormatsOpt = OptionBuilder.withArgName("list_deep_formats")
+                .withLongOpt("list_deep_formats")
+                .withDescription("list deep formats (6+ nested levels)")
+                .create("df");
+        
+        Option listDeepTopicsOpt = OptionBuilder.withArgName("list_deep_topics")
+                .withLongOpt("list_deep_topics")
+                .withDescription("list deep topics (6+ nested levels)")
+                .create("dt");
 
         Option countTopicsOpt = OptionBuilder.withArgName("count_topics")
                 .withLongOpt("count_topics")
@@ -97,15 +113,20 @@ public class Main {
                 .withDescription("sort broad synonyms")
                 .create("sbs");
 
-//        Option summaryOpt = OptionBuilder.withArgName("summary_table")
-//                .withLongOpt("summary_table")
-//                .withDescription("outputs a summay table")
-//                .create("summary");
+        Option summaryOpt = OptionBuilder.withArgName("summary_table")
+                .withLongOpt("summary_table")
+                .withDescription("outputs a summay table")
+                .create("summary");
+
         options.addOption(inOwlOpt);
         options.addOption(countDataOpt);
         options.addOption(countTopicsOpt);
+        options.addOption(countOperationsOpt);
+        options.addOption(listDeepOperationsOpt);
+        options.addOption(listDeepFormatsOpt);
+        options.addOption(listDeepDataOpt);
+        options.addOption(listDeepTopicsOpt);
         options.addOption(countFormatsOpt);
-        options.addOption(countFormatsBDTOpt);
         options.addOption(countExactSynonymsOpt);
         options.addOption(sortExactSynonymsOpt);
         options.addOption(countNarrowSynonymsOpt);
@@ -193,11 +214,6 @@ public class Main {
                 Queries.runSelect(Queries.countFormats, model);
             }
 
-            if (cmd.hasOption("cfdt")) {
-                logger.debug("counting formats by data types");
-                Queries.runSelect(Queries.countFormatsByDataType, model);
-            }
-
             if (cmd.hasOption("ct")) {
                 logger.debug("counting topics");
                 Queries.runSelect(Queries.countTopics, model);
@@ -206,6 +222,31 @@ public class Main {
             if (cmd.hasOption("cd")) {
                 logger.debug("counting data");
                 Queries.runSelect(Queries.countData, model);
+            }
+            
+            if (cmd.hasOption("co")) {
+                logger.debug("counting operations");
+                Queries.runSelect(Queries.countOperations, model);
+            }
+            
+            if (cmd.hasOption("do")) {
+                logger.debug("list deep operations");
+                Queries.runSelect(Queries.listDeepOperations, model);
+            }
+            
+            if (cmd.hasOption("dt")) {
+                logger.debug("list deep topics");
+                Queries.runSelect(Queries.listDeepTopics, model);
+            }
+            
+            if (cmd.hasOption("df")) {
+                logger.debug("list deep formats");
+                Queries.runSelect(Queries.listDeepFormats, model);
+            }
+            
+            if (cmd.hasOption("dd")) {
+                logger.debug("list deep data");
+                Queries.runSelect(Queries.listDeepData, model);
             }
 
             if (cmd.hasOption("v")) {

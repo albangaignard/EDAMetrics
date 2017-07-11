@@ -35,9 +35,41 @@ public class Queries {
             + "    ?edam_format rdfs:subClassOf* <http://edamontology.org/format_1915> .\n"
             + "}";
     
-    public static String countFormatsByDataType = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
-            + "SELECT (COUNT(DISTINCT ?edam_format) as ?count_EDAM_formats_data_types) WHERE { \n"
-            + "    ?edam_format rdfs:subClassOf* <http://edamontology.org/format_2350> .\n"
+    public static String countOperations = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+            + "SELECT (COUNT(DISTINCT ?edam_op) as ?count_EDAM_operations) WHERE { \n"
+            + "    ?edam_op rdfs:subClassOf* <http://edamontology.org/operation_0004> .\n"
+            + "}";
+    
+    public static String listDeepOperations = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+            + "SELECT DISTINCT ?edam_deep_op ?label WHERE { \n"
+            + "    ?edam_deep_op "
+            + "         rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf+ " //6+ nested levels
+            + "             <http://edamontology.org/operation_0004> .\n"
+            + "    ?edam_deep_op rdfs:label ?label\n"
+            + "}";
+    
+    public static String listDeepTopics = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+            + "SELECT DISTINCT ?edam_deep_topic ?label WHERE { \n"
+            + "    ?edam_deep_topic "
+            + "         rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf+ " //6+ nested levels
+            + "             <http://edamontology.org/topic_0003> .\n"
+            + "    ?edam_deep_topic rdfs:label ?label\n"
+            + "}";
+    
+    public static String listDeepFormats = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+            + "SELECT DISTINCT ?edam_deep_formats ?label WHERE { \n"
+            + "    ?edam_deep_formats "
+            + "         rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf+ " //6+ nested levels
+            + "             <http://edamontology.org/format_1915> .\n"
+            + "    ?edam_deep_formats rdfs:label ?label\n"
+            + "}";
+    
+    public static String listDeepData = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+            + "SELECT DISTINCT ?edam_deep_data ?label WHERE { \n"
+            + "    ?edam_deep_data "
+            + "         rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf/rdfs:subClassOf+ " //6+ nested levels
+            + "             <http://edamontology.org/data_0006> .\n"
+            + "    ?edam_deep_data rdfs:label ?label\n"
             + "}";
 
     public static String countExactSynonyms = "PREFIX prov: <http://www.w3.org/ns/prov#>\n"
