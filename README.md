@@ -1,4 +1,4 @@
-# EDAMetrics
+# EDAMetrics ![build status](https://travis-ci.org/albangaignard/EDAMetrics.svg?branch=master)
 Computing basic metrics for the EDAM ontology. 
 ```
 java -jar target/EDAMetrics-0.0.1-SNAPSHOT-standalone.jar -i ~/Desktop/EDAM_1.18.owl -h 
